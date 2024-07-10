@@ -1,4 +1,4 @@
-import {UserData} from './user.interface';
+import {UserData} from './user.type';
 
 export class User {
     private id: string;

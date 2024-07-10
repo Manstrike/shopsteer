@@ -1,9 +1,13 @@
-import {IsPhoneNumber, IsString} from 'class-validator';
+import {IsNotEmpty, IsPhoneNumber, IsString, IsEnum} from 'class-validator';
+import {Roles} from '../userRoles';
 
 export class UpdateUserDto {
     @IsPhoneNumber()
+    @IsNotEmpty()
+    @IsString()
     phone: string;
 
-    @IsString()
-    role: string;
+    @IsNotEmpty()
+    @IsEnum(Roles)
+    role: Roles;
 }

@@ -1,4 +1,4 @@
-import {UserData} from 'src/entities/user.interface';
+import {UserData} from 'src/entities/user.type';
 import {Injectable} from '@nestjs/common';
 import {SearchUsersDto} from './dto/searchUsers.dto';
 

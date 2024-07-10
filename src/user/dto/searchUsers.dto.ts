@@ -1,7 +1,9 @@
-import {IsOptional, MinLength, IsPhoneNumber, IsString} from 'class-validator';
+import {IsOptional, MinLength, IsPhoneNumber, IsString, IsArray, IsEnum} from 'class-validator';
+import {Roles} from '../userRoles';
 
 export class SearchUsersDto {
-    @IsString()
+    @IsArray()
+    @IsString({each: true})
     @IsOptional()
     ids?: [string];
 
@@ -15,5 +17,6 @@ export class SearchUsersDto {
 
     @IsString()
     @IsOptional()
-    role?: string;
+    @IsEnum(Roles)
+    role?: Roles;
 }

@@ -7,11 +7,7 @@ import {UserRepository} from './userRepository';
 
 @Injectable()
 export class UserService {
-    private userRepository: UserRepository;
-
-    constructor(@Inject(UserRepository) userRepository) {
-        this.userRepository = userRepository;
-    }
+    constructor(@Inject(UserRepository) private userRepository: UserRepository) {}
 
     async getUser(id: string): Promise<string> {
         return this.userRepository.findById(id);
