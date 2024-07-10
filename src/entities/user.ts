@@ -1,31 +1,35 @@
 import {UserData} from './user.interface';
 
 export class User {
-    private _id: string;
-    private _login: string;
-    private _password: string;
-    private _phone: string;
+    private id: string;
+    private login: string;
+    private password: string;
+    private phone: string;
 
-    constructor(data: UserData) {
-        this._id = data.id;
-        this._login = data.id;
-        this._password = data.password;
-        this._phone = data.phone;
+    private constructor(data: UserData) {
+        this.id = data.id;
+        this.login = data.id;
+        this.password = data.password;
+        this.phone = data.phone;
     }
 
     getId(): string {
-        return this._id;
+        return this.id;
     }
 
     getLogin(): string {
-        return this._login;
+        return this.login;
     }
 
     getPassword(): string {
-        return this._password;
+        return this.password;
     }
 
     getPhone(): string {
-        return this._phone;
+        return this.phone;
+    }
+
+    public static create(data: UserData) {
+        return new User(data);
     }
 }

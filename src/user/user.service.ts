@@ -13,8 +13,8 @@ export class UserService {
         this.userRepository = userRepository;
     }
 
-    async getUser(id): Promise<string> {
-        return this.userRepository.findById({id});
+    async getUser(id: string): Promise<string> {
+        return this.userRepository.findById(id);
     }
 
     async search(searchUserDto: SearchUsersDto): Promise<string[]> {
@@ -31,7 +31,7 @@ export class UserService {
         // return { token: 'token' }
     }
 
-    async update(updateUserDto): Promise<UpdateUserDto> {
+    async update(updateUserDto: UpdateUserDto): Promise<string> {
         return updateUserDto.phone;
     }
 }
