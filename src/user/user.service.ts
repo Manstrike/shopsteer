@@ -27,7 +27,7 @@ export class UserService {
         // return { token: 'token' }
     }
 
-    async update(updateUserDto: UpdateUserDto): Promise<string> {
-        return updateUserDto.phone;
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<string[]> {
+        return [id, updateUserDto.phone];
     }
 }
