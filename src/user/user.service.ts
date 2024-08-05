@@ -1,4 +1,4 @@
-import {Injectable, Inject} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {RegisterUserDto} from './dto/registerUser.dto';
 import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
@@ -7,7 +7,7 @@ import {UserRepository} from './userRepository';
 
 @Injectable()
 export class UserService {
-    constructor(@Inject(UserRepository) private userRepository: UserRepository) {}
+    constructor(private userRepository: UserRepository) {}
 
     async getUser(id: string): Promise<string> {
         return this.userRepository.findById(id);
