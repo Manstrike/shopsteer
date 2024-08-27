@@ -1,10 +1,10 @@
-import {UserData} from 'src/entities/user.type';
 import {Injectable} from '@nestjs/common';
 import {SearchUsersDto} from './dto/searchUsers.dto';
 import {SearchOneUser} from './dto/searchOneUser.dto';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, In} from 'typeorm';
 import {UserEntity} from 'src/db/user.entity';
+import {User} from 'src/entities/user';
 
 @Injectable()
 export class UserRepository {
@@ -13,15 +13,25 @@ export class UserRepository {
         private userRepository: Repository<UserEntity>,
     ) {}
 
-    async findById(id: string): Promise<UserData | null> {
-        return this.userRepository.findOneBy({id});
+    async findById(id: string): Promise<User | null> {
+        const dbResult = await this.userRepository.findOneBy({id});
+        if (!dbResult) {
+            return null;
+        }
+        const result = User.create(dbResult);
+        return result;
     }
 
-    async findOne({id, login, phone}: SearchOneUser): Promise<UserData | null> {
-        return this.userRepository.findOneBy({id, login, phone});
+    async findOne({id, login, phone}: SearchOneUser): Promise<User | null> {
+        const dbResult = await this.userRepository.findOneBy({id, login, phone});
+        if (!dbResult) {
+            return null;
+        }
+        const result = User.create(dbResult);
+        return result;
     }
 
-    async findAll({ids, login, phone, role}: SearchUsersDto): Promise<UserData[] | []> {
+    async findAll({ids, login, phone, role}: SearchUsersDto): Promise<User[] | []> {
         const whereConditions = {};
         if (ids) {
             whereConditions['id'] = In(ids);
@@ -39,27 +49,29 @@ export class UserRepository {
             whereConditions['role'] = role;
         }
 
-        return this.userRepository.find({
+        const dbResult = await this.userRepository.find({
             where: whereConditions,
         });
-
-        /* const dbResult = this.userRepository.find({
-            where: whereConditions,
-        });
-        if (!dbResult) {
-            return dbResult;
-        } */
-        // create and return entity?
+        const result = dbResult.map((x) =>
+            User.create({
+                id: x.id,
+                login: x.login,
+                password: x.password,
+                role: x.role,
+                phone: x.phone,
+            }),
+        );
+        return result;
     }
 
-    async save(user: UserData) {
+    async save(user: User) {
         await this.userRepository.upsert(
             {
-                id: user.id,
-                login: user.login,
-                phone: user.phone,
-                role: user.role,
-                password: user.password,
+                id: user.getId(),
+                login: user.getLogin(),
+                phone: user.getPhone(),
+                role: user.getRole(),
+                password: user.getPassword(),
             },
             ['id'],
         );

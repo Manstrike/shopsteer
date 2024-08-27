@@ -4,19 +4,19 @@ import {RegisterUserDto} from './dto/registerUser.dto';
 import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
 import {SearchUsersDto} from './dto/searchUsers.dto';
-import {UserData} from 'src/entities/user.type';
+import {User} from 'src/entities/user';
 
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get(':id')
-    getUser(@Param('id') id: string): Promise<UserData | null> {
+    getUser(@Param('id') id: string): Promise<User | null> {
         return this.userService.getUser(id);
     }
 
     @Post('search')
-    search(@Body() searchUserDto: SearchUsersDto): Promise<UserData[] | []> {
+    search(@Body() searchUserDto: SearchUsersDto): Promise<User[] | []> {
         return this.userService.search(searchUserDto);
     }
 
