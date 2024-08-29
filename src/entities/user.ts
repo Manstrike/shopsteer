@@ -39,31 +39,4 @@ export class User {
     public static create(data: UserData) {
         return new User(data);
     }
-
-    public verifyPassword(password: string): boolean {
-        //temporary solution
-        if (password !== this.password) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public updateUser({newLogin, newPassword, newRole, newPhone}) {
-        if (newLogin) {
-            this.login = newLogin;
-        }
-
-        if (newPassword) {
-            this.password = newPassword;
-        }
-
-        if (newRole) {
-            this.role = newRole;
-        }
-
-        if (newPhone) {
-            this.phone = newPhone;
-        }
-    }
 }

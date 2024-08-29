@@ -2,17 +2,17 @@ import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 import {Roles} from 'src/user/userRoles';
 
 @Entity()
-export class UserEntity {
+export class UserSchema {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({unique: true})
     login: string;
 
     @Column()
     password: string;
 
-    @Column()
+    @Column({unique: true})
     phone: string;
 
     @Column()

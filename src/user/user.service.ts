@@ -1,10 +1,12 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, BadRequestException, InternalServerErrorException} from '@nestjs/common';
 import {RegisterUserDto} from './dto/registerUser.dto';
 import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
 import {SearchUsersDto} from './dto/searchUsers.dto';
 import {UserRepository} from './userRepository';
 import {User} from 'src/entities/user';
+import {QueryFailedError} from 'typeorm';
+import {PasswordHasService} from 'src/passwordHashService';
 
 @Injectable()
 export class UserService {
@@ -19,28 +21,33 @@ export class UserService {
     }
 
     async registerUser(registerUserDto: RegisterUserDto): Promise<string> {
-        const user = await this.userRepository.findOne({login: registerUserDto.login});
-        if (user) {
-            //error
-            return 'user already exists.';
+        try {
+            const hashedPassword = await PasswordHasService.hash(registerUserDto.password);
+            const userEntity = User.create({
+                login: registerUserDto.login,
+                password: hashedPassword,
+                phone: registerUserDto.phone,
+                role: registerUserDto.role,
+            });
+            await this.userRepository.save(userEntity);
+        } catch (error) {
+            if (error instanceof QueryFailedError) {
+                throw new BadRequestException();
+            }
+            throw new InternalServerErrorException();
         }
-        //probably phone validation is needed so there is unique phone number for each user
-
-        const userEntity = User.create(registerUserDto);
-        this.userRepository.save(userEntity);
         return 'token';
     }
 
     async login(loginUserDto: LoginUserDto): Promise<string> {
         const user = await this.userRepository.findOne({login: loginUserDto.login});
         if (!user) {
-            //error
-            return 'user with this login was snot found.';
+            throw new BadRequestException();
         }
 
-        if (!user.verifyPassword(loginUserDto.password)) {
-            //error
-            return 'wrong password.';
+        const match = await PasswordHasService.compare(loginUserDto.password, user.getPassword());
+        if (!match) {
+            throw new BadRequestException();
         }
         return 'token';
     }
@@ -48,15 +55,20 @@ export class UserService {
     async update(id: string, updateUserDto: UpdateUserDto) {
         const user = await this.userRepository.findById(id);
         if (!user) {
-            //error
-            return 'user not found';
+            throw new BadRequestException();
         }
-        user.updateUser({
-            newLogin: updateUserDto.login,
-            newPassword: updateUserDto.password,
-            newRole: updateUserDto.role,
-            newPhone: updateUserDto.phone,
+
+        let newHashedPassword;
+        if (updateUserDto.password) {
+            newHashedPassword = await PasswordHasService.hash(updateUserDto.password);
+        }
+        const updatedUser = User.create({
+            id: user.getId(),
+            login: updateUserDto.login ? updateUserDto.login : user.getLogin(),
+            password: updateUserDto.password ? newHashedPassword : user.getPassword(),
+            role: updateUserDto.role ? updateUserDto.role : user.getRole(),
+            phone: updateUserDto.phone ? updateUserDto.phone : user.getPhone(),
         });
-        await this.userRepository.save(user);
+        await this.userRepository.save(updatedUser);
     }
 }

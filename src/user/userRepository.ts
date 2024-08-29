@@ -3,14 +3,14 @@ import {SearchUsersDto} from './dto/searchUsers.dto';
 import {SearchOneUser} from './dto/searchOneUser.dto';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, In} from 'typeorm';
-import {UserEntity} from 'src/db/user.entity';
+import {UserSchema} from 'src/db/user.schema';
 import {User} from 'src/entities/user';
 
 @Injectable()
 export class UserRepository {
     constructor(
-        @InjectRepository(UserEntity)
-        private userRepository: Repository<UserEntity>,
+        @InjectRepository(UserSchema)
+        private userRepository: Repository<UserSchema>,
     ) {}
 
     async findById(id: string): Promise<User | null> {
