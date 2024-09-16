@@ -1,13 +1,25 @@
-import {IsNotEmpty, IsPhoneNumber, IsString, IsEnum} from 'class-validator';
+import {MinLength, MaxLength, IsOptional, IsPhoneNumber, IsString, IsEnum} from 'class-validator';
 import {Roles} from '../userRoles';
 
 export class UpdateUserDto {
     @IsPhoneNumber()
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    phone: string;
+    phone?: string;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsString()
+    @MinLength(6)
+    @MaxLength(20)
+    login?: string;
+
+    @IsOptional()
+    @IsString()
+    @MinLength(6)
+    @MaxLength(20)
+    password?: string;
+
+    @IsOptional()
     @IsEnum(Roles)
-    role: Roles;
+    role?: Roles;
 }

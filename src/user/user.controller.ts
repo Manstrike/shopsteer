@@ -10,7 +10,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get(':id')
-    getUser(@Param('id') id: string): Promise<string> {
+    getUser(@Param('id') id: string) {
         return this.userService.getUser(id);
     }
 

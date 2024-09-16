@@ -1,3 +1,4 @@
+import {Roles} from 'src/user/userRoles';
 import {UserData} from './user.type';
 
 export class User {
@@ -5,12 +6,14 @@ export class User {
     private login: string;
     private password: string;
     private phone: string;
+    private role: Roles;
 
     private constructor(data: UserData) {
         this.id = data.id;
-        this.login = data.id;
+        this.login = data.login;
         this.password = data.password;
         this.phone = data.phone;
+        this.role = data.role;
     }
 
     getId(): string {
@@ -27,6 +30,10 @@ export class User {
 
     getPhone(): string {
         return this.phone;
+    }
+
+    getRole(): Roles {
+        return this.role;
     }
 
     public static create(data: UserData) {
