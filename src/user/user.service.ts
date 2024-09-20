@@ -4,9 +4,9 @@ import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
 import {SearchUsersDto} from './dto/searchUsers.dto';
 import {UserRepository} from './userRepository';
-import {User} from 'src/entities/user';
+import {User} from 'src/entities/user-entity/user';
 import {QueryFailedError} from 'typeorm';
-import {PasswordHasService} from 'src/passwordHashService';
+import {PasswordHashService} from 'src/passwordHashService';
 
 @Injectable()
 export class UserService {
@@ -22,7 +22,7 @@ export class UserService {
 
     async registerUser(registerUserDto: RegisterUserDto): Promise<string> {
         try {
-            const hashedPassword = await PasswordHasService.hash(registerUserDto.password);
+            const hashedPassword = await PasswordHashService.hash(registerUserDto.password);
             const userEntity = User.create({
                 login: registerUserDto.login,
                 password: hashedPassword,
@@ -45,7 +45,7 @@ export class UserService {
             throw new BadRequestException();
         }
 
-        const match = await PasswordHasService.compare(loginUserDto.password, user.getPassword());
+        const match = await PasswordHashService.compare(loginUserDto.password, user.getPassword());
         if (!match) {
             throw new BadRequestException();
         }
@@ -60,7 +60,7 @@ export class UserService {
 
         let newHashedPassword;
         if (updateUserDto.password) {
-            newHashedPassword = await PasswordHasService.hash(updateUserDto.password);
+            newHashedPassword = await PasswordHashService.hash(updateUserDto.password);
         }
         const updatedUser = User.create({
             id: user.getId(),

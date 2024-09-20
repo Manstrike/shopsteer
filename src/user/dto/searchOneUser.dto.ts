@@ -1,16 +1,17 @@
-import {IsOptional, MinLength, IsPhoneNumber, IsString, IsArray} from 'class-validator';
+import {IsOptional, MinLength, IsPhoneNumber, IsString} from 'class-validator';
 
-export class SearchOneUser {
-    @IsArray()
-    @IsString({each: true})
+export class SearchOneUserDto {
     @IsOptional()
+    @IsString()
     id?: string;
 
     @MinLength(6)
+    @IsString()
     @IsOptional()
     login?: string;
 
     @IsPhoneNumber()
     @IsOptional()
+    @IsString()
     phone?: string;
 }
