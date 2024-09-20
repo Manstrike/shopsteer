@@ -1,10 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {SearchUsersDto} from './dto/searchUsers.dto';
-import {SearchOneUser} from './dto/searchOneUser.dto';
+import {SearchOneUserDto} from './dto/searchOneUser.dto';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, In} from 'typeorm';
 import {UserSchema} from 'src/db/user.schema';
-import {User} from 'src/entities/user';
+import {User} from 'src/entities/user-entity/user';
 
 @Injectable()
 export class UserRepository {
@@ -22,7 +22,7 @@ export class UserRepository {
         return result;
     }
 
-    async findOne({id, login, phone}: SearchOneUser): Promise<User | null> {
+    async findOne({id, login, phone}: SearchOneUserDto): Promise<User | null> {
         const dbResult = await this.userRepository.findOneBy({id, login, phone});
         if (!dbResult) {
             return null;
