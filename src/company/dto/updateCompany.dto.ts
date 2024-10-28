@@ -9,7 +9,6 @@ export class UpdateCompanyDto {
     name?: string;
 
     @IsNotEmpty()
-    @IsOptional()
     @IsBoolean()
-    isActive?: boolean;
+    isActive: boolean;
 }

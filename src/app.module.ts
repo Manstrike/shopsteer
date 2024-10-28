@@ -1,10 +1,14 @@
 import {Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {UserModule} from './user/user.module';
+import {BaseUserModule} from './baseUser/baseUser.module';
 import {DbConnectionModule} from './db/pgconnection.module';
 import {ConfigModule} from '@nestjs/config';
 import {CompanyModule} from './company/company.module';
+import {CompanyUserModule} from './companyUser/companyUser.module';
+import {APP_GUARD} from '@nestjs/core';
+import {AuthGuard} from './authGuard';
+import {JwtService} from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -12,11 +16,19 @@ import {CompanyModule} from './company/company.module';
             envFilePath: '.development.env',
             isGlobal: true,
         }),
-        UserModule,
+        BaseUserModule,
         CompanyModule,
+        CompanyUserModule,
         DbConnectionModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        JwtService,
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard,
+        },
+    ],
 })
 export class AppModule {}

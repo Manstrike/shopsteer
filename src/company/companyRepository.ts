@@ -5,6 +5,8 @@ import {CompanySchema} from 'src/db/company.schema';
 import {Company} from 'src/entities/company-entity/company';
 import {SearchCompaniesDto} from './dto/searchCompanies.dto';
 import {SearchOneCompanyDto} from './dto/searchOneCompany.dto';
+import {convertCompanyEntityToDbData, convertCompanySchemaToResponse} from 'src/dataConverters';
+import {CompanyData} from 'src/entities/company-entity/company.type';
 
 @Injectable()
 export class CompanyRepository {
@@ -13,26 +15,26 @@ export class CompanyRepository {
         private companyRepository: Repository<CompanySchema>,
     ) {}
 
-    async findById(id: string) {
+    async findById(id: string): Promise<CompanyData | null> {
         const dbResult = await this.companyRepository.findOneBy({id});
 
         if (!dbResult) {
             return null;
         }
-        const result = Company.create(dbResult);
+        const result = convertCompanySchemaToResponse(dbResult);
         return result;
     }
 
-    async findOne({id, merchantId, name, isActive}: SearchOneCompanyDto) {
-        const dbResult = await this.companyRepository.findOneBy({id, merchantId, name, isActive});
+    async findOne({id, name, isActive}: SearchOneCompanyDto): Promise<CompanyData | null> {
+        const dbResult = await this.companyRepository.findOneBy({id, name, isActive});
         if (!dbResult) {
             return null;
         }
-        const result = Company.create(dbResult);
+        const result = convertCompanySchemaToResponse(dbResult);
         return result;
     }
 
-    async findAll({ids, merchantId, name, isActive}: SearchCompaniesDto) {
+    async findAll({ids, merchantId, name, isActive}: SearchCompaniesDto): Promise<CompanyData[] | []> {
         const whereConditions = {};
         if (ids) {
             whereConditions['id'] = In(ids);
@@ -54,12 +56,17 @@ export class CompanyRepository {
             where: whereConditions,
         });
 
-        const result = dbResult.map((x) =>
+        /* const result = dbResult.map((x) =>
             Company.create({
                 id: x.id,
-                merchantId: x.merchantId,
                 name: x.name,
-                merchant: x.merchant,
+                isActive: x.isActive,
+            }),
+        ); */
+        const result = dbResult.map((x) =>
+            convertCompanySchemaToResponse({
+                id: x.id,
+                name: x.name,
                 isActive: x.isActive,
             }),
         );
@@ -67,13 +74,12 @@ export class CompanyRepository {
     }
 
     async save(company: Company) {
+        const dataToSave = convertCompanyEntityToDbData(company);
         await this.companyRepository.upsert(
             {
-                id: company.getId(),
-                merchantId: company.getMerchantId(),
-                merchant: company.getMerchant(),
-                name: company.getName(),
-                isActive: company.getIsActive(),
+                id: dataToSave.id,
+                name: dataToSave.name,
+                isActive: dataToSave.isActive,
             },
             ['id'],
         );

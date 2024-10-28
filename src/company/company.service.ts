@@ -1,47 +1,49 @@
-import {Injectable, BadRequestException, InternalServerErrorException} from '@nestjs/common';
-import {Company} from 'src/entities/company-entity/company';
+import {Injectable, BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {QueryFailedError} from 'typeorm';
 import {CompanyRepository} from './companyRepository';
 import {SearchCompaniesDto} from './dto/searchCompanies.dto';
 import {CreateCompanyDto} from './dto/createCompany.dto';
 import {UpdateCompanyDto} from './dto/updateCompany.dto';
-import {UserRepository} from 'src/user/userRepository';
-import {Roles} from 'src/user/userRoles';
+import {GetCompanyInteractor} from './get-company/getCompanyInteractor';
+import {GetCompanyResponseData} from './response-types/getCompany.type';
+import {SearchCompaniesResponseData} from './response-types/searchCompanies.type';
+import {SearchCompaniesInteractor} from './search-company/searchCompaniesInteractor';
+import {CreateCompanyInteractor} from './create-company/createCompanyInteractor';
+import {CreateCompanyResponseData} from './response-types/createCompany.type';
+import {UpdateCompanyInteractor} from './update-company/updateCompanyInteractor';
 
 @Injectable()
 export class CompanyService {
     constructor(
         private companyRepository: CompanyRepository,
-        private userRepository: UserRepository,
+        private getCompanyInteractor: GetCompanyInteractor,
+        private searchCompaniesInteractor: SearchCompaniesInteractor,
+        private createCompanyInteractor: CreateCompanyInteractor,
+        private updateCompanyInteractor: UpdateCompanyInteractor,
     ) {}
 
-    async getCompany(id: string): Promise<Company | null> {
-        return this.companyRepository.findById(id);
-    }
-
-    async search(searchCompaniesDto: SearchCompaniesDto): Promise<Company[] | []> {
-        return this.companyRepository.findAll(searchCompaniesDto);
-    }
-
-    async create(createCompanyDto: CreateCompanyDto) {
-        const user = await this.userRepository.findById(createCompanyDto.merchantId);
-        if (user.getRole() !== Roles.MERCHANT) {
-            throw new BadRequestException('User is not merchant.');
-        }
-
-        const userCompanyExist = await this.companyRepository.findOne({merchantId: createCompanyDto.merchantId});
-        if (userCompanyExist) {
-            throw new BadRequestException('User is already registered as company.');
-        }
-
+    async getCompany(id: string): Promise<GetCompanyResponseData | null> {
         try {
-            const companyEntity = Company.create({
-                merchantId: createCompanyDto.merchantId,
-                merchant: createCompanyDto.merchant,
-                name: createCompanyDto.name,
-                isActive: createCompanyDto.isActive,
-            });
-            await this.companyRepository.save(companyEntity);
+            return this.getCompanyInteractor.execute(id);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException('Company was not found.');
+            }
+            throw new InternalServerErrorException();
+        }
+    }
+
+    async search(searchCompaniesDto: SearchCompaniesDto): Promise<SearchCompaniesResponseData[] | []> {
+        try {
+            return this.searchCompaniesInteractor.execute(searchCompaniesDto);
+        } catch (error) {
+            throw new InternalServerErrorException();
+        }
+    }
+
+    async create(createCompanyDto: CreateCompanyDto): Promise<CreateCompanyResponseData> {
+        try {
+            return this.createCompanyInteractor.execute(createCompanyDto);
         } catch (error) {
             if (error instanceof QueryFailedError) {
                 throw new BadRequestException();
@@ -51,18 +53,13 @@ export class CompanyService {
     }
 
     async update(id: string, updateCompanyDto: UpdateCompanyDto) {
-        const company = await this.companyRepository.findById(id);
-        if (!company) {
-            throw new BadRequestException();
+        try {
+            return this.updateCompanyInteractor.execute(id, updateCompanyDto);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException('Company was not found.');
+            }
+            throw new InternalServerErrorException();
         }
-        const updatedCompany = Company.create({
-            id: company.getId(),
-            merchantId: company.getMerchantId(),
-            merchant: company.getMerchant(),
-            name: updateCompanyDto.name ? updateCompanyDto.name : company.getName(),
-            isActive:
-                updateCompanyDto.isActive !== company.getIsActive() ? updateCompanyDto.isActive : company.getIsActive(),
-        });
-        await this.companyRepository.save(updatedCompany);
     }
 }
