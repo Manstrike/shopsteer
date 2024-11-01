@@ -52,9 +52,9 @@ export class CompanyService {
         }
     }
 
-    async update(id: string, updateCompanyDto: UpdateCompanyDto) {
+    async update(id: string, updateCompanyDto: UpdateCompanyDto /* , requestUserId: string */) {
         try {
-            return this.updateCompanyInteractor.execute(id, updateCompanyDto);
+            return this.updateCompanyInteractor.execute(id, updateCompanyDto /* , requestUserId */);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException('Company was not found.');

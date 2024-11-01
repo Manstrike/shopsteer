@@ -54,15 +54,7 @@ export class CompanyUserRepository {
         const dbResult = await this.companyUserRepository.find({
             where: whereConditions,
         });
-        //TODO: remove comment
-        /* const result = dbResult.map((x) =>
-            CompanyUser.create({
-                id: x.id,
-                role: x.role,
-                companyId: x.companyId,
-                baseUserId: x.baseUserId,
-            }),
-        ); */
+
         const result = dbResult.map((x) =>
             convertCompanyUserSchemaToResponse({
                 id: x.id,

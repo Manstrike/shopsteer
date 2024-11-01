@@ -51,6 +51,7 @@ export class CompanyUserService {
 
     async update(id: string, updateCompanyUserDto: UpdateCompanyUserDto) {
         try {
+            // only owner can change?
             return this.updateCompanyUserInteractor.execute(id, updateCompanyUserDto);
         } catch (error) {
             if (error instanceof NotFoundException) {

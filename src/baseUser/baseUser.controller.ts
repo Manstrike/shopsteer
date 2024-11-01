@@ -1,18 +1,17 @@
-import {Body, Controller, Get, Param, Post, Put, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put, Req} from '@nestjs/common';
 import {BaseUserService} from './baseUser.service';
 import {RegisterUserDto} from './dto/registerUser.dto';
 import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
 import {SearchUsersDto} from './dto/searchUsers.dto';
-import {AuthGuard} from 'src/authGuard';
 import {Public} from 'src/public.decorator';
+import {CustomRequest} from './customRequest.type';
 
 @Controller('users')
 export class BaseUserController {
     constructor(private readonly baseUserService: BaseUserService) {}
 
     @Get(':id')
-    @UseGuards(AuthGuard)
     getUser(@Param('id') id: string) {
         return this.baseUserService.getUser(id);
     }
@@ -35,7 +34,8 @@ export class BaseUserController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.baseUserService.update(id, updateUserDto);
+    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() request: CustomRequest) {
+        const requestUserId = request.user.id;
+        return this.baseUserService.update(id, updateUserDto, requestUserId);
     }
 }

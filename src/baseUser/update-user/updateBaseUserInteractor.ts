@@ -2,7 +2,7 @@ import {BaseUserRepository} from '../baseUserRepository';
 import {UpdateUserDto} from '../dto/updateUser.dto';
 import {UpdateBaseUserResponseBuilder} from './updateBaseUserResponseBuilder';
 import {PasswordHashService} from 'src/passwordHashService';
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable} from '@nestjs/common';
 import {User} from 'src/entities/user-entity/user';
 import {UpdateBaseUsersResponseData} from '../response-types/updateBaseUser.type';
 
@@ -13,10 +13,18 @@ export class UpdateBaseUserInteractor {
         private responseBuilder: UpdateBaseUserResponseBuilder,
     ) {}
 
-    async execute(id: string, updateUserDto: UpdateUserDto): Promise<UpdateBaseUsersResponseData> {
+    async execute(
+        id: string,
+        updateUserDto: UpdateUserDto,
+        requestUserId: string,
+    ): Promise<UpdateBaseUsersResponseData> {
         const user = await this.baseUserRepository.findById(id);
         if (!user) {
             throw new BadRequestException();
+        }
+
+        if (user.id !== requestUserId) {
+            throw new ForbiddenException();
         }
 
         let newHashedPassword;

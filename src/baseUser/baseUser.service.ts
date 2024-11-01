@@ -67,9 +67,13 @@ export class BaseUserService {
         }
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto): Promise<UpdateBaseUsersResponseData> {
+    async update(
+        id: string,
+        updateUserDto: UpdateUserDto,
+        requestUserId: string,
+    ): Promise<UpdateBaseUsersResponseData> {
         try {
-            return this.updateInteractor.execute(id, updateUserDto);
+            return this.updateInteractor.execute(id, updateUserDto, requestUserId);
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw new NotFoundException('User does not exist.');

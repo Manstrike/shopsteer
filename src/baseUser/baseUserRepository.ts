@@ -50,17 +50,7 @@ export class BaseUserRepository {
         const dbResult = await this.userRepository.find({
             where: whereConditions,
         });
-        //TODO: remove comment
-        /* const result = dbResult.map((x) =>
-            User.create({
-                id: x.id,
-                login: x.login,
-                password: x.password,
-                phone: x.phone,
-                email: x.email,
-                name: x.name,
-            }),
-        ); */
+
         const result = dbResult.map((x) =>
             convertBaseUserSchemaToResponse({
                 id: x.id,
