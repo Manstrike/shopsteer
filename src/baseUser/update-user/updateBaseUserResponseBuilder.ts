@@ -8,7 +8,6 @@ export class UpdateBaseUserResponseBuilder {
             id: entity.getId(),
             name: entity.getName(),
             email: entity.getEmail(),
-            password: entity.getPassword(),
             phone: entity.getPhone(),
             login: entity.getLogin(),
         };
