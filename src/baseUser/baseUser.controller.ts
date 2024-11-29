@@ -1,11 +1,12 @@
-import {Body, Controller, Get, Param, Post, Put, Req} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import {BaseUserService} from './baseUser.service';
 import {RegisterUserDto} from './dto/registerUser.dto';
 import {LoginUserDto} from './dto/loginUser.dto';
 import {UpdateUserDto} from './dto/updateUser.dto';
 import {SearchUsersDto} from './dto/searchUsers.dto';
 import {Public} from 'src/public.decorator';
-import {CustomRequest} from './customRequest.type';
+import {TokenDataDecorator} from '../tokenData.decorator';
+import {TokenData} from 'src/tokenData.type';
 
 @Controller('users')
 export class BaseUserController {
@@ -34,8 +35,8 @@ export class BaseUserController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() request: CustomRequest) {
-        const requestUserId = request.user.id;
+    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @TokenDataDecorator() tokenData: TokenData) {
+        const requestUserId = tokenData.id;
         return this.baseUserService.update(id, updateUserDto, requestUserId);
     }
 }

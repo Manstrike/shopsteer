@@ -5,7 +5,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, In} from 'typeorm';
 import {BaseUserSchema} from 'src/db/baseUser.schema';
 import {User} from 'src/entities/user-entity/user';
-import {convertBaseUserEntityToDbData, convertBaseUserSchemaToResponse} from 'src/dataConverters';
+import {convertBaseUserEntityToDbData, convertBaseUserSchemaToResponse} from './baseUserDataConverter';
 import {UserData} from 'src/entities/user-entity/user.type';
 
 @Injectable()
@@ -20,8 +20,7 @@ export class BaseUserRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertBaseUserSchemaToResponse(dbResult);
-        return result;
+        return convertBaseUserSchemaToResponse(dbResult);
     }
 
     async findOne({id, login, phone}: SearchOneUserDto): Promise<UserData | null> {
@@ -29,8 +28,7 @@ export class BaseUserRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertBaseUserSchemaToResponse(dbResult);
-        return result;
+        return convertBaseUserSchemaToResponse(dbResult);
     }
 
     async findAll({ids, login, phone}: SearchUsersDto): Promise<UserData[] | []> {

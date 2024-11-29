@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common';
+import {Company} from 'src/entities/company-entity/company';
 
 @Injectable()
 export class UpdateCompanyResponseBuilder {
-    //entity -> dto ?
-    async build(entity) {
+    async build(entity: Company) {
         return {
             id: entity.getId(),
             name: entity.getName(),

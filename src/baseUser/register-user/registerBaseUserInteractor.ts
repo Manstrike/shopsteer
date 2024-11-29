@@ -4,7 +4,7 @@ import {RegisterBaseUserResponseBuilder} from './registerBaseUserResponseBuilder
 import {PasswordHashService} from 'src/passwordHashService';
 import {User} from 'src/entities/user-entity/user';
 import {BadRequestException, Injectable} from '@nestjs/common';
-import {AuthService} from 'src/authService';
+import {AuthService} from 'src/auth/authService';
 
 @Injectable()
 export class RegisterBaseUserInteractor {
@@ -18,7 +18,7 @@ export class RegisterBaseUserInteractor {
         const user = await this.baseUserRepository.findOne({login: registerUserDto.login});
 
         if (user) {
-            throw new BadRequestException();
+            throw new BadRequestException('User with this login already exists.');
         }
 
         const hashedPassword = await PasswordHashService.hash(registerUserDto.password);

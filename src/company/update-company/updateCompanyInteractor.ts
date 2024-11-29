@@ -14,7 +14,7 @@ export class UpdateCompanyInteractor {
     async execute(id, updateCompanyDto): Promise<UpdateCompanyResponseData> {
         const companyExists = await this.companyRepository.findById(id);
         if (!companyExists) {
-            throw new NotFoundException();
+            throw new NotFoundException('Company does not exist.');
         }
 
         const updatedCompany = Company.create({

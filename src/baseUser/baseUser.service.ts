@@ -28,7 +28,7 @@ export class BaseUserService {
             return this.getBaseUserInteractor.execute(id);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('User with this id does not exist.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -50,7 +50,7 @@ export class BaseUserService {
                 throw new BadRequestException();
             }
             if (error instanceof BadRequestException) {
-                throw new BadRequestException('User already exists.');
+                throw new BadRequestException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -61,7 +61,7 @@ export class BaseUserService {
             return this.loginInteractor.execute(loginUserDto);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('User does not exist.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -76,7 +76,7 @@ export class BaseUserService {
             return this.updateInteractor.execute(id, updateUserDto, requestUserId);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('User does not exist.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }

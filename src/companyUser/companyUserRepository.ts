@@ -5,7 +5,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, In} from 'typeorm';
 import {CompanyUser} from 'src/entities/company-user-entity/companyUser';
 import {CompanyUserSchema} from 'src/db/companyUser.schema';
-import {convertCompanyUserEntityToDbData, convertCompanyUserSchemaToResponse} from 'src/dataConverters';
+import {convertCompanyUserEntityToDbData, convertCompanyUserSchemaToResponse} from './companyUserDataConverter';
 import {CompanyUserData} from 'src/entities/company-user-entity/companyUser.type';
 
 @Injectable()
@@ -20,8 +20,7 @@ export class CompanyUserRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertCompanyUserSchemaToResponse(dbResult);
-        return result;
+        return convertCompanyUserSchemaToResponse(dbResult);
     }
 
     async findOne({id, role, companyId, baseUserId}: SearchOneCompanyUserDto): Promise<CompanyUserData | null> {
@@ -29,8 +28,7 @@ export class CompanyUserRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertCompanyUserSchemaToResponse(dbResult);
-        return result;
+        return convertCompanyUserSchemaToResponse(dbResult);
     }
 
     async findAll({ids, role, companyId, baseUserId}: SearchCompanyUsersDto): Promise<CompanyUserData[] | []> {

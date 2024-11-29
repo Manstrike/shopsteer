@@ -5,7 +5,7 @@ import {CompanySchema} from 'src/db/company.schema';
 import {Company} from 'src/entities/company-entity/company';
 import {SearchCompaniesDto} from './dto/searchCompanies.dto';
 import {SearchOneCompanyDto} from './dto/searchOneCompany.dto';
-import {convertCompanyEntityToDbData, convertCompanySchemaToResponse} from 'src/dataConverters';
+import {convertCompanyEntityToDbData, convertCompanySchemaToResponse} from './companyDataConverter';
 import {CompanyData} from 'src/entities/company-entity/company.type';
 
 @Injectable()
@@ -21,8 +21,7 @@ export class CompanyRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertCompanySchemaToResponse(dbResult);
-        return result;
+        return convertCompanySchemaToResponse(dbResult);
     }
 
     async findOne({id, name, isActive}: SearchOneCompanyDto): Promise<CompanyData | null> {
@@ -30,8 +29,7 @@ export class CompanyRepository {
         if (!dbResult) {
             return null;
         }
-        const result = convertCompanySchemaToResponse(dbResult);
-        return result;
+        return convertCompanySchemaToResponse(dbResult);
     }
 
     async findAll({ids, merchantId, name, isActive}: SearchCompaniesDto): Promise<CompanyData[] | []> {
@@ -56,13 +54,6 @@ export class CompanyRepository {
             where: whereConditions,
         });
 
-        /* const result = dbResult.map((x) =>
-            Company.create({
-                id: x.id,
-                name: x.name,
-                isActive: x.isActive,
-            }),
-        ); */
         const result = dbResult.map((x) =>
             convertCompanySchemaToResponse({
                 id: x.id,

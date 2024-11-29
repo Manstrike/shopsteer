@@ -3,7 +3,7 @@ import {BaseUserRepository} from '../baseUserRepository';
 import {LoginUserDto} from '../dto/loginUser.dto';
 import {LoginResponseBuilder} from './loginResponseBuilder';
 import {PasswordHashService} from 'src/passwordHashService';
-import {AuthService} from 'src/authService';
+import {AuthService} from 'src/auth/authService';
 
 @Injectable()
 export class LoginInteractor {
@@ -16,7 +16,7 @@ export class LoginInteractor {
     async execute(loginUserDto: LoginUserDto): Promise<{access_token: string}> {
         const user = await this.baseUserRepository.findOne({login: loginUserDto.login});
         if (!user) {
-            throw new BadRequestException();
+            throw new BadRequestException('User does not exist.');
         }
 
         const match = await PasswordHashService.compare(loginUserDto.password, (await user).password);

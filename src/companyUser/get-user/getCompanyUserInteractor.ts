@@ -14,7 +14,7 @@ export class GetCompanyUserInteractor {
         const user = await this.companyUserRepository.findById(id);
 
         if (!user) {
-            throw new NotFoundException();
+            throw new NotFoundException('User was not found.');
         }
 
         return this.getCompanyUserResponseBuilder.build(user);

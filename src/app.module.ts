@@ -7,7 +7,7 @@ import {ConfigModule} from '@nestjs/config';
 import {CompanyModule} from './company/company.module';
 import {CompanyUserModule} from './companyUser/companyUser.module';
 import {APP_GUARD} from '@nestjs/core';
-import {AuthGuard} from './authGuard';
+import {AuthGuard} from './auth/authGuard';
 import {JwtService} from '@nestjs/jwt';
 
 @Module({

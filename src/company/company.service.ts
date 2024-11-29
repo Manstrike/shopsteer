@@ -1,6 +1,5 @@
 import {Injectable, BadRequestException, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {QueryFailedError} from 'typeorm';
-import {CompanyRepository} from './companyRepository';
 import {SearchCompaniesDto} from './dto/searchCompanies.dto';
 import {CreateCompanyDto} from './dto/createCompany.dto';
 import {UpdateCompanyDto} from './dto/updateCompany.dto';
@@ -15,7 +14,6 @@ import {UpdateCompanyInteractor} from './update-company/updateCompanyInteractor'
 @Injectable()
 export class CompanyService {
     constructor(
-        private companyRepository: CompanyRepository,
         private getCompanyInteractor: GetCompanyInteractor,
         private searchCompaniesInteractor: SearchCompaniesInteractor,
         private createCompanyInteractor: CreateCompanyInteractor,
@@ -27,7 +25,7 @@ export class CompanyService {
             return this.getCompanyInteractor.execute(id);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('Company was not found.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -46,7 +44,7 @@ export class CompanyService {
             return this.createCompanyInteractor.execute(createCompanyDto);
         } catch (error) {
             if (error instanceof QueryFailedError) {
-                throw new BadRequestException();
+                throw new BadRequestException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -57,7 +55,7 @@ export class CompanyService {
             return this.updateCompanyInteractor.execute(id, updateCompanyDto /* , requestUserId */);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('Company was not found.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }

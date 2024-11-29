@@ -20,7 +20,7 @@ export class UpdateBaseUserInteractor {
     ): Promise<UpdateBaseUsersResponseData> {
         const user = await this.baseUserRepository.findById(id);
         if (!user) {
-            throw new BadRequestException();
+            throw new BadRequestException('User does not exist.');
         }
 
         if (user.id !== requestUserId) {

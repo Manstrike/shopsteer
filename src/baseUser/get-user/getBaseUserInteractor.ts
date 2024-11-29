@@ -14,7 +14,7 @@ export class GetBaseUserInteractor {
         const user = await this.baseUserRepository.findById(id);
 
         if (!user) {
-            throw new NotFoundException();
+            throw new NotFoundException('User was not found.');
         }
 
         return this.getBaseUserResponseBuilder.build(user);

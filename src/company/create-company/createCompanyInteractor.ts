@@ -14,7 +14,7 @@ export class CreateCompanyInteractor {
     async execute(createCompanyDto): Promise<CreateCompanyResponseData> {
         const userCompanyExist = await this.companyRepository.findOne({name: createCompanyDto.name});
         if (userCompanyExist) {
-            throw new BadRequestException();
+            throw new BadRequestException('Company with this name already exists.');
         }
 
         const newCompany = Company.create({

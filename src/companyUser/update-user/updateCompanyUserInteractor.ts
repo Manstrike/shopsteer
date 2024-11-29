@@ -15,7 +15,7 @@ export class UpdateCompanyUserInteractor {
     async execute(id: string, updateCompanyUserDto: UpdateCompanyUserDto): Promise<UpdateCompanyUserResponseData> {
         const user = await this.companyUserRepository.findById(id);
         if (!user) {
-            throw new BadRequestException();
+            throw new BadRequestException('User does not exist.');
         }
 
         const updatedUser = CompanyUser.create({

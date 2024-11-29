@@ -24,7 +24,7 @@ export class CompanyUserService {
             return this.getCompanyUserInteractor.execute(id);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('User with this id does not exist.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }
@@ -55,7 +55,7 @@ export class CompanyUserService {
             return this.updateCompanyUserInteractor.execute(id, updateCompanyUserDto);
         } catch (error) {
             if (error instanceof NotFoundException) {
-                throw new NotFoundException('User was not found.');
+                throw new NotFoundException(error.message);
             }
             throw new InternalServerErrorException();
         }

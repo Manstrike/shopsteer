@@ -14,7 +14,7 @@ export class GetCompanyInteractor {
         const company = await this.companyRepository.findById(id);
 
         if (!company) {
-            throw new NotFoundException();
+            throw new NotFoundException('Company was not found.');
         }
 
         return this.responseBuilder.build(company);
