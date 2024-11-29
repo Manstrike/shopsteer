@@ -10,5 +10,6 @@ export class UpdateCompanyDto {
 
     @IsNotEmpty()
     @IsBoolean()
+    @IsOptional()
     isActive: boolean;
 }

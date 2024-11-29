@@ -17,16 +17,17 @@ export class UpdateCompanyInteractor {
             throw new NotFoundException('Company does not exist.');
         }
 
+        let isActiveValue: boolean;
+
+        if (updateCompanyDto.isActive !== undefined && typeof updateCompanyDto.isActive === 'boolean') {
+            isActiveValue = updateCompanyDto.isActive;
+        } else {
+            isActiveValue = companyExists.isActive;
+        }
         const updatedCompany = Company.create({
             id: companyExists.id,
             name: updateCompanyDto.name ? updateCompanyDto.name : companyExists.name,
-            // isActive is not optional anymore, since if it is missing in request it gets undefined.
-            // if i use conditions as above for name then when isActive is changed to 'false' it wont change
-            // because of condition looks like: if (false)... and it will always use companyExists.getIsActive()
-            isActive:
-                updateCompanyDto.isActive !== companyExists.isActive
-                    ? updateCompanyDto.isActive
-                    : companyExists.isActive,
+            isActive: isActiveValue,
         });
 
         await this.companyRepository.save(updatedCompany);
