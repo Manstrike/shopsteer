@@ -3,6 +3,7 @@ import {CompanyRepository} from '../companyRepository';
 import {UpdateCompanyResponseBuilder} from './updateCompanyResponseBuilder';
 import {Company} from 'src/entities/company-entity/company';
 import {UpdateCompanyResponseData} from '../response-types/updateCompany.type';
+import {UpdateCompanyDto} from '../dto/updateCompany.dto';
 
 @Injectable()
 export class UpdateCompanyInteractor {
@@ -11,7 +12,7 @@ export class UpdateCompanyInteractor {
         private responseBuilder: UpdateCompanyResponseBuilder,
     ) {}
 
-    async execute(id, updateCompanyDto): Promise<UpdateCompanyResponseData> {
+    async execute(id: string, updateCompanyDto: UpdateCompanyDto): Promise<UpdateCompanyResponseData> {
         const companyExists = await this.companyRepository.findById(id);
         if (!companyExists) {
             throw new NotFoundException('Company does not exist.');
