@@ -3,6 +3,7 @@ import {CompanyRepository} from '../companyRepository';
 import {CreateCompanyResponseBuilder} from './createCompanyResponseBuilder';
 import {CreateCompanyResponseData} from '../response-types/createCompany.type';
 import {Company} from 'src/entities/company-entity/company';
+import {CreateCompanyDto} from '../dto/createCompany.dto';
 
 @Injectable()
 export class CreateCompanyInteractor {
@@ -11,7 +12,7 @@ export class CreateCompanyInteractor {
         private responseBuilder: CreateCompanyResponseBuilder,
     ) {}
 
-    async execute(createCompanyDto): Promise<CreateCompanyResponseData> {
+    async execute(createCompanyDto: CreateCompanyDto): Promise<CreateCompanyResponseData> {
         const userCompanyExist = await this.companyRepository.findOne({name: createCompanyDto.name});
         if (userCompanyExist) {
             throw new BadRequestException('Company with this name already exists.');

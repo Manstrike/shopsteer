@@ -31,6 +31,7 @@ export class UpdateCompanyInteractor {
             isActive: isActiveValue,
         });
 
+        //TODO: looks like company is not protected from changes by not related to it users
         await this.companyRepository.save(updatedCompany);
         return this.responseBuilder.build(updatedCompany);
     }

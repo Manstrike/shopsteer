@@ -5,7 +5,8 @@ import {CompanyUser} from 'src/entities/company-user-entity/companyUser';
 export class CreateCompanyUserResponseBuilder {
     async build(entity: CompanyUser) {
         return {
-            id: entity.getId(),
+            // commented id since it is not getting passed to entity
+            //id: entity.getId(),
             role: entity.getRole(),
             companyId: entity.getCompanyId(),
             baseUserId: entity.getBaseUserId(),

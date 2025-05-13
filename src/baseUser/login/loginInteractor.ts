@@ -21,7 +21,7 @@ export class LoginInteractor {
 
         const match = await PasswordHashService.compare(loginUserDto.password, (await user).password);
         if (!match) {
-            throw new BadRequestException();
+            throw new BadRequestException('Invalid password.');
         }
 
         const token = await this.authService.sign({id: user.id});
